@@ -1,25 +1,25 @@
-package hello.advanced.app.v1;
+package hello.advanced.app.v2;
 
 import hello.advanced.trace.TraceStatus;
 import hello.advanced.trace.hellotrace.HelloTraceV1;
+import hello.advanced.trace.hellotrace.HelloTraceV2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor
-public class OrderControllerV1 {
+public class OrderControllerV2 {
 
-    private final OrderServiceV1 orderService;
-    private final HelloTraceV1 trace; // 의존관계주입을 받음
+    private final OrderServiceV2 orderService;
+    private final HelloTraceV2 trace; // 의존관계주입을 받음
 
-    @GetMapping("/v1/request")
+    @GetMapping("/v2/request")
     public String request(String itemId){
         TraceStatus status = null;
         try{
             status = trace.begin("OrderControllerV1.request()");
-            orderService.orderItem(itemId);
+            orderService.orderItem(status.getTraceId(), itemId);
             trace.end(status); // 위에 서비스에서 예외가 터져버리면 end호출이 안됨!! =>try catch로 감싸기
             return "ok";
         }catch (Exception e) {
